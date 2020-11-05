@@ -5,7 +5,7 @@ resource "google_storage_bucket" "state-bucket" {
   force_destroy               = false
   location                    = "EUROPE-NORTH1"
   name                        = "great-escape-infra"
-  project                     = "great-escape-294716"
+  project                     = var.project_id
   requester_pays              = false
   storage_class               = "STANDARD"
   uniform_bucket_level_access = false

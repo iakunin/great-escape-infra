@@ -12,5 +12,7 @@ provider "google" {
 }
 
 module "terraform" {
-  source = "./modules/terraform"
+  source     = "./modules/terraform"
+  project_id = var.project_id
 }
+
