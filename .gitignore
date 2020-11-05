@@ -1,2 +1,2 @@
-gcp-service-account-creds.json
+gcp-service-account-*
 .terraform
