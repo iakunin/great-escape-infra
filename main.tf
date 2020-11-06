@@ -30,12 +30,20 @@ module "terraform" {
   region     = var.region
 }
 
+module "container-registry" {
+  source     = "./modules/shared/container-registry"
+  location   = var.container-registry-location
+  project_id = var.project_id
+}
+
 module "app" {
-  source                      = "./modules/app"
-  project_id                  = var.project_id
-  project_name                = var.project_name
-  region                      = var.region
-  container-registry-location = var.container-registry-location
+  source       = "./modules/app"
+  project_id   = var.project_id
+  project_name = var.project_name
+  region       = var.region
+  admin-ui = {
+    image : "${module.container-registry.url}/admin-ui:latest"
+  }
 }
 
 # @TODO: all required GoogleAPI should be enabled beforehand (test it on new project at google-cloud)

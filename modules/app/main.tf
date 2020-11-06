@@ -1,14 +1,8 @@
-module "container-registry" {
-  source     = "../shared/container-registry"
-  location   = var.container-registry-location
-  project_id = var.project_id
-}
-
 module "admin-ui" {
   source     = "./admin-ui"
   project_id = var.project_id
   region     = var.region
-  image      = module.container-registry.image-urls.admin-ui
+  image      = var.admin-ui.image
 }
 
 module "backend" {

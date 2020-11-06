@@ -1,4 +1,8 @@
 variable "project_name" {}
 variable "project_id" {}
 variable "region" {}
-variable "container-registry-location" {}
+variable "admin-ui" {
+  type = object({
+    image : string
+  })
+}
