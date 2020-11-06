@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 0.13"
+
   backend "gcs" {
     bucket      = "great-escape-infra"
     credentials = "gcp-service-account-state-credentials.json"
@@ -7,11 +9,11 @@ terraform {
   required_providers {
     google = {
       version = "~> 3.46.0"
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
     }
     random = {
       version = "~> 3.0.0"
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
     }
   }
 }
@@ -24,7 +26,16 @@ provider "google" {
 
 module "terraform" {
   source     = "./modules/terraform"
-  project_name = var.project_name
   project_id = var.project_id
-  region = var.region
+  region     = var.region
 }
+
+module "app" {
+  source                      = "./modules/app"
+  project_id                  = var.project_id
+  project_name                = var.project_name
+  region                      = var.region
+  container-registry-location = var.container-registry-location
+}
+
+# @TODO: all required GoogleAPI should be enabled beforehand (test it on new project at google-cloud)

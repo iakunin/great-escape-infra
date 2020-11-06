@@ -12,6 +12,9 @@ variable "deploy-sa-roles" {
     "roles/iam.serviceAccountAdmin",
     "roles/resourcemanager.projectIamAdmin",
     "roles/cloudsql.admin",
+    "roles/run.admin",
+    # Needed for CloudRUN (https://cloud.google.com/run/docs/reference/iam/roles#gcloud)
+    "roles/iam.serviceAccountUser",
   ]
 }
 
