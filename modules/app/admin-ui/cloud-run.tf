@@ -1,7 +1,7 @@
 resource "google_cloud_run_service" "admin-ui" {
-  name     = "admin-ui-cloud-run"
-  location = lower(var.region)
-  project  = var.project_id
+  name     = var.service_name
+  location = var.project.region
+  project  = var.project.id
 
   template {
     spec {

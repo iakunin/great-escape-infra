@@ -1,6 +1,5 @@
-variable "project_name" {}
-variable "project_id" {}
-variable "region" {}
+variable "project" {}
+
 variable "admin-ui" {
   type = object({
     image : string

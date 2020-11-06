@@ -19,30 +19,29 @@ terraform {
 }
 
 provider "google" {
-  project     = var.project_id
-  region      = lower(var.region)
+  project     = var.project.id
+  region      = lower(var.project.region)
   credentials = "gcp-service-account-deploy-credentials.json"
 }
 
 module "terraform" {
-  source     = "./modules/terraform"
-  project_id = var.project_id
-  region     = var.region
+  source  = "./modules/terraform"
+  project = var.project
 }
 
-module "container-registry" {
-  source     = "./modules/shared/container-registry"
-  location   = var.container-registry-location
-  project_id = var.project_id
+module "shared" {
+  source  = "./modules/shared"
+  project = var.project
+
+  location = var.container-registry-location
 }
 
 module "app" {
-  source       = "./modules/app"
-  project_id   = var.project_id
-  project_name = var.project_name
-  region       = var.region
+  source  = "./modules/app"
+  project = var.project
+
   admin-ui = {
-    image : "${module.container-registry.url}/admin-ui:latest"
+    image : "${module.shared.container-registry-url}/admin-ui:latest"
   }
 }
 

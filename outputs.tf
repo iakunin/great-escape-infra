@@ -1,3 +1,3 @@
-output "admin-ui-url" {
-  value = module.app.admin-ui-url
-}
+# output "admin-ui-url" {
+#   value = module.app.admin-ui-url
+# }
