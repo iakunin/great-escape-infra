@@ -5,14 +5,16 @@ terraform {
     prefix      = "terraform/state"
   }
 }
+
 provider "google" {
-  project     = "great-escape-294716"
-  region      = "europe-north1"
+  project     = var.project_id
+  region      = lower(var.region)
   credentials = "gcp-service-account-deploy-credentials.json"
 }
 
 module "terraform" {
   source     = "./modules/terraform"
+  project_name = var.project_name
   project_id = var.project_id
+  region = var.region
 }
-

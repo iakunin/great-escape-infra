@@ -10,7 +10,8 @@ variable "deploy-sa-roles" {
   default = [
     "roles/storage.admin",
     "roles/iam.serviceAccountAdmin",
-    "roles/resourcemanager.projectIamAdmin"
+    "roles/resourcemanager.projectIamAdmin",
+    "roles/cloudsql.admin",
   ]
 }
 
