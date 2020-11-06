@@ -1,10 +1,9 @@
-# module.terraform.google_storage_bucket.state-bucket:
 resource "google_storage_bucket" "state-bucket" {
   default_event_based_hold    = false
   force_destroy               = false
-  location                    = upper(var.region)
+  location                    = var.project.region
   name                        = "great-escape-infra"
-  project                     = var.project_id
+  project                     = var.project.id
   requester_pays              = false
   storage_class               = "STANDARD"
   uniform_bucket_level_access = false
