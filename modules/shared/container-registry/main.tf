@@ -5,5 +5,5 @@ resource "google_container_registry" "main" {
 
 data "google_container_registry_repository" "main" {
   project = google_container_registry.main.project
-  region  = google_container_registry.main.location
+  region  = lower(var.location)
 }
