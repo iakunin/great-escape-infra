@@ -13,13 +13,27 @@ variable "project" {
 
 variable "github" {
   type = object({
-    owner         = string,
-    managed_repos = list(string)
+    owner = string,
+    managed_repos = list(object({
+      name       = string
+      build_type = string
+    }))
   })
   default = {
     owner = "iakunin",
     managed_repos = [
-      "great-escape"
+      {
+        name       = "great-escape-api-monolith"
+        build_type = "gradle"
+      },
+      {
+        name       = "great-escape-ui-admin"
+        build_type = "dockerfile"
+      },
+      {
+        name       = "great-escape-ui-player"
+        build_type = "dockerfile"
+      }
     ]
   }
 }

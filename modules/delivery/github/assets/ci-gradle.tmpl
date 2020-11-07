@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_ID: ${ project_id }
-  IMAGE: admin-ui
+  IMAGE: ${ image_base_name }
 
 jobs:
   build:
@@ -15,6 +15,11 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
+
+      - name: Setting up java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
 
       - name: Setup GCP CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.3
@@ -26,15 +31,16 @@ jobs:
         run: |-
           gcloud --quiet auth configure-docker
 
-      - name: Build
-        run: |-
-          docker build \
-            -f ./admin-ui/.deploy/Dockerfile-admin-ui \
-            --tag "eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
-            --build-arg GITHUB_SHA="$GITHUB_SHA" \
-            --build-arg GITHUB_REF="$GITHUB_REF" \
-            ./admin-ui/
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: $${{ runner.os }}-gradle-$${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            $${{ runner.os }}-gradle-
 
-      - name: Publish docker image
+      - name: Gradle build
         run: |-
-          docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+          ./gradlew jib -Djib.to.image="eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
