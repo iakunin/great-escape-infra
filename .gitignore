@@ -30,3 +30,4 @@ terraform.rc
 
 # Service accounts
 gcp-service-account-*
+github-token

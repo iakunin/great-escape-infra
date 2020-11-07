@@ -24,6 +24,12 @@ provider "google" {
   credentials = "gcp-service-account-deploy-credentials.json"
 }
 
+provider "github" {
+  token = file("github-token")
+  owner = var.github.owner
+}
+
+
 module "terraform" {
   source  = "./modules/terraform"
   project = var.project
@@ -34,15 +40,28 @@ module "shared" {
   project = var.project
 
   location = var.container-registry-location
+
+  depends_on = [
+    module.terraform
+  ]
 }
+
 
 module "app" {
   source  = "./modules/app"
   project = var.project
 
   admin-ui = {
-    image : "${module.shared.container-registry-url}/admin-ui:latest"
+    image : "${module.shared.container_registry.url}/admin-ui:latest"
   }
+}
+
+
+module "delivery" {
+  source             = "./modules/delivery"
+  project            = var.project
+  github             = var.github
+  container_registry = module.shared.container_registry
 }
 
 # @TODO: all required GoogleAPI should be enabled beforehand (test it on new project at google-cloud)

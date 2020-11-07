@@ -11,6 +11,19 @@ variable "project" {
   }
 }
 
+variable "github" {
+  type = object({
+    owner         = string,
+    managed_repos = list(string)
+  })
+  default = {
+    owner = "iakunin",
+    managed_repos = [
+      "great-escape"
+    ]
+  }
+}
+
 variable "container-registry-location" {
   description = "See https://cloud.google.com/container-registry/docs/pushing-and-pulling for more info"
   type        = string

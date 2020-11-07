@@ -11,5 +11,7 @@ variable "deploy-sa-roles" {
     "roles/run.admin",
     # Needed for CloudRUN (https://cloud.google.com/run/docs/reference/iam/roles#gcloud)
     "roles/iam.serviceAccountUser",
+    "roles/secretmanager.admin",
+    "roles/iam.serviceAccountKeyAdmin"
   ]
 }
