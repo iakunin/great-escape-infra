@@ -7,3 +7,11 @@ output "container_registry" {
     }
   }
 }
+
+output "serverless_vpc_connector" {
+  value = google_vpc_access_connector.serverless_vpc_connector.id
+}
+
+output "internal_dns_zone" {
+  value = google_dns_managed_zone.internal_dns_zone.id
+}
