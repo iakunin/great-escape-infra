@@ -1,6 +1,6 @@
 variable project {}
-variable github {}
 variable container_registry {}
+variable repository {}
 
 variable "github_user" {
   type = map

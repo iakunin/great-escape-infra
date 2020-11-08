@@ -1,45 +1,60 @@
-variable "project" {
+variable project {
   type = object({
-    name   = string
-    id     = string
-    region = string
+    name                        = string
+    id                          = string
+    region                      = string
+    container_registry_location = string
   })
   default = {
-    name   = "great-escape"
-    id     = "great-escape-294716"
-    region = "europe-north1"
+    name                        = "great-escape"
+    id                          = "great-escape-294716"
+    region                      = "europe-west1"
+    container_registry_location = "eu"
   }
 }
 
-variable "github" {
+variable github {
   type = object({
-    owner = string,
-    managed_repos = list(object({
-      name       = string
+    owner = string
+    managed_repos = map(object({
       build_type = string
+      is_api     = bool
+      route      = string
     }))
   })
   default = {
-    owner = "iakunin",
-    managed_repos = [
-      {
-        name       = "great-escape-api-monolith"
-        build_type = "gradle"
+    owner = "iakunin"
+    managed_repos = {
+      "great-escape-api-monolith" = {
+        build_type = "gradle-jib"
+        is_api     = true
+        route      = "/monolith/"
       },
-      {
-        name       = "great-escape-ui-admin"
+      "great-escape-ui-admin" = {
         build_type = "dockerfile"
+        is_api     = false
+        route      = "/admin/"
       },
-      {
-        name       = "great-escape-ui-player"
+      "great-escape-ui-player" = {
         build_type = "dockerfile"
+        is_api     = false
+        route      = "/"
       }
-    ]
+    }
   }
 }
 
-variable "container-registry-location" {
-  description = "See https://cloud.google.com/container-registry/docs/pushing-and-pulling for more info"
-  type        = string
-  default     = "eu"
+variable cloud_run_service_defaults {
+  type = object({
+    healthcheck = object({
+      port = number
+      url  = string
+    })
+  })
+  default = {
+    healthcheck = {
+      port = 80
+      url  = "/health"
+    }
+  }
 }

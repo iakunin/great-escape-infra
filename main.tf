@@ -24,6 +24,12 @@ provider "google" {
   credentials = "gcp-service-account-deploy-credentials.json"
 }
 
+provider "google-beta" {
+  project     = var.project.id
+  region      = lower(var.project.region)
+  credentials = "gcp-service-account-deploy-credentials.json"
+}
+
 provider "github" {
   token = file("github-token")
   owner = var.github.owner
@@ -39,29 +45,66 @@ module "shared" {
   source  = "./modules/shared"
   project = var.project
 
-  location = var.container-registry-location
-
   depends_on = [
     module.terraform
   ]
 }
 
+module "ci-github" {
+  source  = "./modules/ci-github"
+  project = var.project
+
+  container_registry = module.shared.container_registry
+
+  for_each = var.github.managed_repos
+  repository = {
+    name  = each.key
+    props = each.value
+  }
+}
+
+module "cloud-run-service" {
+  source           = "./modules/cloud-run-service"
+  project          = var.project
+  service_defaults = var.cloud_run_service_defaults
+
+  for_each = var.github.managed_repos
+  repository = {
+    name  = each.key
+    route = each.value.route
+  }
+}
 
 module "app" {
   source  = "./modules/app"
   project = var.project
 
-  admin-ui = {
-    image : "${module.shared.container_registry.url}/admin-ui:latest"
+  repos_with_endpoints = {
+    for repo, props in var.github.managed_repos :
+    repo => merge(props, { endpoint = module.cloud-run-service[repo].endpoint })
   }
 }
 
 
-module "delivery" {
-  source             = "./modules/delivery"
-  project            = var.project
-  github             = var.github
-  container_registry = module.shared.container_registry
-}
+
+# module "api-gateway" {
+#   source = "./modules/api-gateway"
+
+#   for_each = {
+#     for repo, props in var.github.managed_repos : repo => props if props.is_api
+#   }
+#   repository = {
+#     name = each.key
+#   }
+#   # for_each   = var.github.managed_repos ==
+#   # repository = each.value.is_api ? {} : null
+#   # # for_each = {
+#   #   for key, value in var.github.managed_repos if value.is_api
+#   # }
+#   # repository = {
+#   #   name   = each.key
+#   #   is_api = each.value.is_api
+#   # }
+# }
 
 # @TODO: all required GoogleAPI should be enabled beforehand (test it on new project at google-cloud)

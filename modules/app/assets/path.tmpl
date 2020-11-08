@@ -1,0 +1,11 @@
+%{ if is_api }/api/v0%{ endif }%{ if path != "/" }${trimsuffix(path, "/")}%{ else }${path}%{ endif }:
+  get:
+    summary: Bootstrap route
+    operationId: bootstrap-%{ if path != "/" }${trim(path, "/")}%{ else }root%{ endif }
+    x-google-backend:
+      address: ${url}
+    responses:
+      '200':
+        description: OK
+        schema:
+          type: string

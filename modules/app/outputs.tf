@@ -1,11 +1,3 @@
-output "admin-ui" {
-  value = {
-    gcp = {
-      url = module.admin-ui.url
-    }
-    github = {
-      repo  = "great-infra"
-      owner = "iakunin"
-    }
-  }
+output api_gw_service_account {
+  value = google_service_account.gateway_service_account.email
 }

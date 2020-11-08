@@ -1,6 +1,6 @@
 resource "google_container_registry" "main" {
   project  = var.project.id
-  location = var.location
+  location = var.project.container_registry_location
 }
 
 resource "google_service_account" "container_registry_deployer" {
@@ -33,6 +33,6 @@ resource "google_secret_manager_secret_version" "deployer_key_secret_version" {
 
 data "google_container_registry_repository" "main" {
   project = google_container_registry.main.project
-  region  = var.location
+  region  = var.project.container_registry_location
 }
 
