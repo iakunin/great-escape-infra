@@ -46,8 +46,8 @@ resource "google_api_gateway_api_config" "api_gw_config" {
   }
 }
 
-resource "google_api_gateway_gateway" "api_gw" {
-  provider   = google-beta
-  api_config = google_api_gateway_api_config.api_gw_config.id
-  gateway_id = "great-escape"
-}
+# resource "google_api_gateway_gateway" "api_gw" {
+#   provider   = google-beta
+#   api_config = google_api_gateway_api_config.api_gw_config.id
+#   gateway_id = "great-escape"
+# }
