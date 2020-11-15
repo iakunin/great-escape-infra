@@ -1,0 +1,51 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${ project_id }
+  GCS_BUCKET: ${ gcs_bucket }
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Setup GCP CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.3
+        with:
+          service_account_key: $${{ secrets.GCS_UPLOAD_SA_KEY }}
+          project_id: $${{ env.PROJECT_ID }}
+
+      - name: Setup bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 3.7.0
+
+      - name: Mount bazel cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel
+          key: $${{ runner.os }}-bazel-$${{ hashFiles('**/BUILD', '**/BUILD.bazel', 'WORKSPACE') }}
+          restore-keys: |
+            $${{ runner.os }}-bazel-
+
+      - name: Bazel build
+        run: |-
+          bazel build //...
+
+      - name: Publish dist-package (only on push to master)
+        if: $${{ github.event_name == 'push' }}
+        run: |-
+          gsutil cp $(bazel info bazel-bin)/all-apis.tar.gz $${GCS_BUCKET}/$(date -u +"%Y-%m-%d-%H-%M-%S")-all-apis-$${GITHUB_SHA}.tar.gz
+

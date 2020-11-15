@@ -17,7 +17,8 @@ variable "terraform-standard-roles-list" {
     "roles/vpcaccess.admin",
     "roles/iam.roleAdmin",
     "roles/apigateway.admin",
-    "roles/workflows.admin"
+    "roles/workflows.admin",
+    "roles/pubsub.admin"
   ]
 }
 

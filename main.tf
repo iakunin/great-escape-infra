@@ -50,6 +50,14 @@ module "shared" {
   ]
 }
 
+module "apis-workflow" {
+  source  = "./modules/apis-workflow"
+  project = var.project
+  depends_on = [
+    module.terraform
+  ]
+}
+
 module "ci-github" {
   source  = "./modules/ci-github"
   project = var.project
