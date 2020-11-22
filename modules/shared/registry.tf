@@ -15,6 +15,16 @@ resource "google_storage_bucket_iam_member" "deployer" {
   role   = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.container_registry_deployer.email}"
 }
+
+# Allow deployer SA to execute workflow
+resource "google_project_iam_binding" "workflow-deployer-execution-binding" {
+  project = var.project.id
+  role    = "roles/workflows.invoker"
+  members = [
+    "serviceAccount:${google_service_account.container_registry_deployer.email}"
+  ]
+}
+
 resource "google_service_account_key" "deployer_key" {
   service_account_id = google_service_account.container_registry_deployer.name
 }

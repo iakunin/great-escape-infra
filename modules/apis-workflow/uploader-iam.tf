@@ -20,4 +20,3 @@ resource "google_secret_manager_secret_version" "bucket_uploader_key_secret_vers
   secret      = google_secret_manager_secret.bucket_uploader_key_secret.id
   secret_data = base64decode(google_service_account_key.bucket_uploader_key.private_key)
 }
-

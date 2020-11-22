@@ -8,7 +8,7 @@ terraform {
   }
   required_providers {
     google = {
-      version = "~> 3.46.0"
+      version = "~> 3.48.0"
       source  = "hashicorp/google"
     }
     random = {
@@ -41,6 +41,10 @@ module "terraform" {
   project = var.project
 }
 
+# Creating shared resources:
+# - container registry
+# - dns zone
+# - etc.
 module "shared" {
   source  = "./modules/shared"
   project = var.project
@@ -50,48 +54,68 @@ module "shared" {
   ]
 }
 
-module "apis-workflow" {
-  source  = "./modules/apis-workflow"
-  project = var.project
-  depends_on = [
-    module.terraform
-  ]
-}
-
-module "ci-github" {
-  source  = "./modules/ci-github"
-  project = var.project
-
-  container_registry = module.shared.container_registry
-
-  for_each = var.github.managed_repos
-  repository = {
-    name  = each.key
-    props = each.value
-  }
-}
-
+# Create cloud run services for each corresponding repo
 module "cloud-run-service" {
   source           = "./modules/cloud-run-service"
   project          = var.project
-  service_defaults = var.cloud_run_service_defaults
+  service_defaults = var.service_defaults
 
-  for_each = var.github.managed_repos
+  for_each = var.github.repositories
   repository = {
     name  = each.key
     route = each.value.route
   }
 }
 
-module "app" {
-  source  = "./modules/app"
+# Creating deploy GCP workflows for all service created
+module "deploy-workflows" {
+  source      = "./modules/deploy-workflows"
+  project     = var.project
+  deployer_sa = module.shared.container_registry.deployer_sa.id
+
+  for_each = var.github.repositories
+  repository = {
+    name  = each.key
+    route = each.value.route
+  }
+  service = module.cloud-run-service[each.key].service
+}
+
+# Setting up github actions CI that includes:
+# - service account keys in repo secrets
+# - workflow definition that builds docker image and uploads it to GCR
+module "ci-github" {
+  source  = "./modules/ci-github"
   project = var.project
 
-  repos_with_endpoints = {
-    for repo, props in var.github.managed_repos :
-    repo => merge(props, { endpoint = module.cloud-run-service[repo].endpoint })
+  container_registry = module.shared.container_registry
+
+  for_each = var.github.repositories
+  repository = {
+    name  = each.key
+    props = each.value
   }
 }
+
+#
+module "apis-workflow" {
+  source  = "./modules/apis-workflow"
+  project = var.project
+  service = module.cloud-run-service["great-escape-api-spec-deployer"].service
+  depends_on = [
+    module.terraform
+  ]
+}
+
+# module "app" {
+#   source  = "./modules/app"
+#   project = var.project
+
+#   repos_with_endpoints = {
+#     for repo, props in var.github.services :
+#     repo => merge(props, { endpoint = module.cloud-run-service[repo].endpoint })
+#   }
+# }
 
 
 

@@ -1,4 +1,5 @@
 variable "project" {}
+variable "service" {}
 
 variable "github_user" {
   type = map
