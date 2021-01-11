@@ -140,3 +140,16 @@ module "ci-github" {
 # }
 
 # @TODO: all required GoogleAPI should be enabled beforehand (test it on new project at google-cloud)
+
+
+module "api-monolith-cloud-sql" {
+  source  = "./modules/cloud-sql"
+  project = var.project
+  database = {
+    name = "api-monolith"
+    user = "api-monolith"
+  }
+  instance = {
+    name = "api-monolith"
+  }
+}
