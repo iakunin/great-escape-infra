@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - master
+
+env:
+  PROJECT_ID: ${ project_id }
+  IMAGE: ${ image_base_name }
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Setting up java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Setup GCP CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.3
+        with:
+          service_account_key: $${{ secrets.GCP_DEPLOY_SA_KEY }}
+          project_id: $${{ env.PROJECT_ID }}
+
+      - name: Configure GCP docker registry
+        run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: $${{ runner.os }}-gradle-$${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            $${{ runner.os }}-gradle-
+
+      - name: Gradle build
+        run: |-
+          ./gradlew jib -Djib.to.image="eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"

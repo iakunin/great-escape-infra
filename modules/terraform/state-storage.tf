@@ -1,7 +1,7 @@
 resource "google_storage_bucket" "state-bucket" {
   default_event_based_hold    = false
   force_destroy               = false
-  location                    = var.project.region
+  location                    = "europe-north1"
   name                        = "great-escape-infra"
   project                     = var.project.id
   requester_pays              = false

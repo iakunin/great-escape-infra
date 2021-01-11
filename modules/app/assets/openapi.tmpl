@@ -1,0 +1,13 @@
+swagger: '2.0'
+info:
+  title: Great Escape API (bootstrapped by terraform)
+  description: Great Escape API (bootstrapped by terraform)
+  version: 0.0.1
+schemes:
+  - https
+produces:
+  - application/json
+paths:
+%{for path in paths ~}
+  ${indent(2, path)}
+%{ endfor ~}
