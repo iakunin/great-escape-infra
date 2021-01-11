@@ -98,14 +98,14 @@ module "ci-github" {
 }
 
 #
-module "apis-workflow" {
-  source  = "./modules/apis-workflow"
-  project = var.project
-  service = module.cloud-run-service["great-escape-api-spec-deployer"].service
-  depends_on = [
-    module.terraform
-  ]
-}
+#module "apis-workflow" {
+#  source  = "./modules/apis-workflow"
+#  project = var.project
+#  service = module.cloud-run-service["great-escape-api-spec-deployer"].service
+#  depends_on = [
+#    module.terraform
+#  ]
+#}
 
 # module "app" {
 #   source  = "./modules/app"
