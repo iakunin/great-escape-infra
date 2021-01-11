@@ -31,7 +31,7 @@ provider "google-beta" {
 }
 
 provider "github" {
-  token = file("github-token")
+  token = chomp(file("github-token"))
   owner = var.github.owner
 }
 
