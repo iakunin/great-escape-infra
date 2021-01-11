@@ -107,7 +107,7 @@ provider "registry.terraform.io/hashicorp/random" {
 
 provider "registry.terraform.io/integrations/github" {
   version     = "4.2.0"
-  constraints = "4.2.0"
+  constraints = "~> 4.2.0"
   hashes = [
     "h1:DBl4WTsQXoe/txN1MjV1YflU32Q+U3UOFVtZUhb6Qc4=",
     "zh:07f593876a48e47f250f2e3617c0167c17e461e6f90a4fbff7df8c27122e577f",
