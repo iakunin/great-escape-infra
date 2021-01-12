@@ -25,8 +25,18 @@ main:
                 annotations:
                   run.googleapis.com/launch-stage: BETA
               spec:
-                template: ${cloudRunService.body.spec.template}
-          - serviceManifest.spec.template.spec.containers[0].image: ${"eu.gcr.io/" + sys.get_env("GOOGLE_CLOUD_PROJECT_ID") + "/" + data.image + ":" + data.tag}
+                template:
+                  metadata:
+                    annotations: ${cloudRunService.body.spec.template.metadata.annotations}
+                  spec:
+                    containerConcurrency: ${cloudRunService.body.spec.template.spec.containerConcurrency}
+                    containers:
+                      - env: ${cloudRunService.body.spec.template.spec.containers[0].env}
+                        image: ${"eu.gcr.io/" + sys.get_env("GOOGLE_CLOUD_PROJECT_ID") + "/" + data.image + ":" + data.tag}
+                        ports: ${cloudRunService.body.spec.template.spec.containers[0].ports}
+                        resources: ${cloudRunService.body.spec.template.spec.containers[0].resources}
+                    serviceAccountName: ${cloudRunService.body.spec.template.spec.serviceAccountName}
+                    timeoutSeconds: ${cloudRunService.body.spec.template.spec.timeoutSeconds}
     - updateCloudRunService:
         call: http.request
         args:
