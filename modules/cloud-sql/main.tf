@@ -12,6 +12,10 @@ resource "google_sql_database_instance" "master" {
     backup_configuration {
       enabled = true
     }
+    database_flags {
+      name  = "max_connections"
+      value = 1000
+    }
   }
 }
 
