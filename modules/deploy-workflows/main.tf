@@ -40,5 +40,5 @@ module "gcloud" {
   create_cmd_entrypoint  = "${path.module}/scripts/deploy-workflow.sh"
   create_cmd_body        = "${local.workflow_name} us-central1 ${google_service_account.workflow_sa.email} ${local.workflow_body}"
   destroy_cmd_entrypoint = "gcloud"
-  destroy_cmd_body       = "beta workflows delete ${local.workflow_name} --location us-central1"
+  destroy_cmd_body       = "beta workflows delete ${local.workflow_name} --location us-central1 --quiet"
 }
