@@ -1,5 +1,5 @@
 # Probably should be moved to data object
-variable project {
+variable "project" {
   type = object({
     name                        = string
     id                          = string
@@ -16,7 +16,7 @@ variable project {
   }
 }
 
-variable github {
+variable "github" {
   type = object({
     owner = string
     repositories = map(object({
@@ -39,15 +39,15 @@ variable github {
         build_type = "dockerfile"
         route      = "/"
       },
-      "great-escape-api-spec-deployer" = {
-        build_type = "dockerfile"
-        route      = "/"
-      },
+      //      "great-escape-api-spec-deployer" = {
+      //        build_type = "dockerfile"
+      //        route      = "/"
+      //      },
     }
   }
 }
 
-variable service_defaults {
+variable "service_defaults" {
   type = object({
     healthcheck = object({
       port = number
