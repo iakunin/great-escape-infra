@@ -15,9 +15,6 @@ main:
           auth:
             type: OAuth2
         result: cloudRunService
-    - getServiceAccount:
-        assign:
-          - serviceAccount: ${cloudRunService.body.spec.template.spec.serviceAccountName}
     - buildServiceManifest:
         assign:
           - serviceManifest:
@@ -26,11 +23,8 @@ main:
               metadata:
                 name: ${data.service}
               spec:
-                template:
-                  spec:
-                    serviceAccountName: ${serviceAccount}
-                    containers:
-                      - image: ${"eu.gcr.io/" + sys.get_env("GOOGLE_CLOUD_PROJECT_ID") + "/" + data.image + ":" + data.tag}
+                template: ${cloudRunService.body.spec.template}
+          - serviceManifest.spec.template.spec.containers[0].image: ${"eu.gcr.io/" + sys.get_env("GOOGLE_CLOUD_PROJECT_ID") + "/" + data.image + ":" + data.tag}
     - updateCloudRunService:
         call: http.request
         args:
