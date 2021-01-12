@@ -50,6 +50,8 @@ jobs:
           ./gradlew build jibDockerBuild \
             -Djib.to.image="$IMAGE:$GITHUB_SHA" \
             -PfailFast=true \
+            -Pprod=true \
+            -Pno-liquibase=true \
             --console=plain
 
       - name: Docker tag default
