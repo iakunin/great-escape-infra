@@ -49,8 +49,8 @@ jobs:
         run: |-
           ./gradlew build jibDockerBuild \
             -Djib.to.image="$IMAGE:$GITHUB_SHA" \
-            --console=plain \
-            --info
+            -PfailFast=true \
+            --console=plain
 
       - name: Docker tag default
         run: |-
