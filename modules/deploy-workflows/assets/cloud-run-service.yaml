@@ -6,7 +6,7 @@
 # }
 
 main:
-  params: [data]
+  params: [ data ]
   steps:
     - fetchServiceManifest:
         call: http.get
@@ -15,6 +15,17 @@ main:
           auth:
             type: OAuth2
         result: cloudRunService
+    - defaultcloudRunEnvVar:
+        assign:
+          - cloudRunEnv: null
+    - checkEnvExist:
+        switch:
+          - condition: ${"env" in cloudRunService.body.spec.template.spec.containers[0]}
+            steps:
+              - reassignCloudRunEnvVar:
+                  assign:
+                    - cloudRunEnv: ${cloudRunService.body.spec.template.spec.containers[0].env}
+        next: buildServiceManifest # @TODO: try to remove this `next`
     - buildServiceManifest:
         assign:
           - serviceManifest:
@@ -32,6 +43,7 @@ main:
                     containerConcurrency: ${cloudRunService.body.spec.template.spec.containerConcurrency}
                     containers:
                       - image: ${"eu.gcr.io/" + sys.get_env("GOOGLE_CLOUD_PROJECT_ID") + "/" + data.image + ":" + data.tag}
+                        env: ${cloudRunEnv}
                         ports: ${cloudRunService.body.spec.template.spec.containers[0].ports}
                         resources: ${cloudRunService.body.spec.template.spec.containers[0].resources}
                     serviceAccountName: ${cloudRunService.body.spec.template.spec.serviceAccountName}
