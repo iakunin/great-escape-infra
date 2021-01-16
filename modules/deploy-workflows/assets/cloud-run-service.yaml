@@ -25,7 +25,6 @@ main:
               - reassignCloudRunEnvVar:
                   assign:
                     - cloudRunEnv: ${cloudRunService.body.spec.template.spec.containers[0].env}
-        next: buildServiceManifest # @TODO: try to remove this `next`
     - buildServiceManifest:
         assign:
           - serviceManifest:
