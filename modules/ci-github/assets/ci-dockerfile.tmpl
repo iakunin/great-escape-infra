@@ -63,7 +63,7 @@ jobs:
 
       - name: Publish docker image
         run: |-
-          docker push "eu.gcr.io/$PROJECT_ID/$IMAGE"
+          docker push --all-tags "eu.gcr.io/$PROJECT_ID/$IMAGE"
 
       - name: Install gcloud beta components
         run: |-
