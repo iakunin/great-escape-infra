@@ -18,7 +18,7 @@ State access and deployment permissions are separated (e.g. when we want allow s
 
 Now **RTFM** (like seriously, all that `terraform show`, `terraform plan` and lalala).
 
-# Credentials
+# Credits
 
 Many thanks to my friend [Alexander Pankratov](https://www.linkedin.com/in/alecpankratov/) for his
 invaluable contribution to this project. Most likely, without him, I would never have learned 
