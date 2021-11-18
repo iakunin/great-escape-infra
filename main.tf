@@ -153,3 +153,15 @@ module "api-monolith-cloud-sql" {
     name = "api-monolith"
   }
 }
+
+
+# @TODO: remove all the commented code
+
+# @TODO: add Cloud Secret to spring app
+
+# @TODO: add `Cloud SQL Client` role to `api-monolith-sa`
+# @TODO: add a connection between CloudRun (api-monolith) to CloudSQL
+# @TODO: add custom settings to api-monolith CloudRun (RAM, CPU, min&max instances)
+# @TODO: add domain mapping (with CloudFlare API)
+# @TODO: add allUsers as `Cloud Run Invoker` to all 3 CloudRuns (make CloudRun publicly available)
+# @TODO: add uptime checks for public domains (https://console.cloud.google.com/monitoring/uptime)
