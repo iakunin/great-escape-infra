@@ -59,7 +59,7 @@ jobs:
           docker tag "$IMAGE:$GITHUB_SHA" \
             "eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
-      - name: Docker tag pull request image with PR number tags
+      - name: Docker tag pull request image with PR number tags & Publish docker image
         if: $${{ github.event_name == 'pull_request' }}
         env:
           PR_NUMBER: $${{ github.event.number }}
@@ -68,18 +68,17 @@ jobs:
             "eu.gcr.io/$PROJECT_ID/$IMAGE:pr-$PR_NUMBER-latest"
           docker tag "$IMAGE:$GITHUB_SHA" \
             "eu.gcr.io/$PROJECT_ID/$IMAGE:pr-$PR_NUMBER-$GITHUB_SHA"
+          docker push "eu.gcr.io/$PROJECT_ID/$IMAGE:pr-$PR_NUMBER-latest"
+          docker push "eu.gcr.io/$PROJECT_ID/$IMAGE:pr-$PR_NUMBER-$GITHUB_SHA"
 
-      - name: Docker tag master image as latest
+      - name: Docker tag master image as latest & Publish docker image
         if: $${{ github.event_name == 'push' }}
         env:
           PR_NUMBER: $${{ github.event.number }}
         run: |-
           docker tag "$IMAGE:$GITHUB_SHA" \
             "eu.gcr.io/$PROJECT_ID/$IMAGE:latest"
-
-      - name: Publish docker image
-        run: |-
-          docker push --all-tags "eu.gcr.io/$PROJECT_ID/$IMAGE"
+          docker push "eu.gcr.io/$PROJECT_ID/$IMAGE:latest"
 
       - name: Install gcloud beta components
         run: |-
