@@ -54,10 +54,11 @@ jobs:
             -Pno-liquibase=true \
             --console=plain
 
-      - name: Docker tag default
+      - name: Docker tag default & Publish docker image
         run: |-
           docker tag "$IMAGE:$GITHUB_SHA" \
             "eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+          docker push "eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
       - name: Docker tag pull request image with PR number tags & Publish docker image
         if: $${{ github.event_name == 'pull_request' }}
