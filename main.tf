@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 1.0.0"
 
   backend "gcs" {
     bucket      = "great-escape-infra"
@@ -10,6 +10,10 @@ terraform {
     google = {
       source  = "hashicorp/google"
       version = "~> 3.51.1"
+    }
+    github = {
+      source  = "integrations/github"
+      version = "~> 4.4.0"
     }
     random = {
       source  = "hashicorp/random"
