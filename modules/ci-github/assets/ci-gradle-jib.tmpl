@@ -62,7 +62,8 @@ jobs:
           docker push "eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
       - name: Docker tag pull request image with PR number tags & Publish docker image
-        if: $${{ github.event_name == 'pull_request' }}
+        # if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ false }}  # disable for now
         env:
           PR_NUMBER: $${{ github.event.number }}
         run: |-
