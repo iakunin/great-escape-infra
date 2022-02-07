@@ -55,15 +55,15 @@ jobs:
             --console=plain
 
       - name: Docker tag default & Publish docker image
-        if: ${{ github.event_name != 'pull_request' }}
+        if: $${{ github.event_name != 'pull_request' }}
         run: |-
           docker tag "$IMAGE:$GITHUB_SHA" \
             "eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
           docker push "eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
       - name: Docker tag pull request image with PR number tags & Publish docker image
-        # if: ${{ github.event_name == 'pull_request' }}
-        if: ${{ false }}  # disable for now
+        # if: $${{ github.event_name == 'pull_request' }}
+        if: $${{ false }}  # disable for now
         env:
           PR_NUMBER: $${{ github.event.number }}
         run: |-
@@ -88,5 +88,6 @@ jobs:
           gcloud components install beta --quiet
 
       - name: Trigger deployment GCP workflow
+        if: $${{ github.event_name != 'pull_request' }}
         run: |-
           gcloud beta workflows execute "$${IMAGE}-delivery" --data "{ \"image\": \"$IMAGE\", \"tag\": \"$GITHUB_SHA\", \"service\": \"$IMAGE\"  }"
