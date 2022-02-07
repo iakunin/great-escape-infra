@@ -26,7 +26,7 @@ jobs:
           java-version: 11
 
       - name: Setup GCP CLI
-        uses: google-github-actions/setup-gcloud@v0.2.0
+        uses: google-github-actions/setup-gcloud@v0.5.0
         with:
           service_account_key: $${{ secrets.GCP_DEPLOY_SA_KEY }}
           project_id: $${{ env.PROJECT_ID }}
@@ -55,6 +55,7 @@ jobs:
             --console=plain
 
       - name: Docker tag default & Publish docker image
+        if: ${{ github.event_name != 'pull_request' }}
         run: |-
           docker tag "$IMAGE:$GITHUB_SHA" \
             "eu.gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
